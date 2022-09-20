@@ -1,0 +1,6 @@
+1. Al implementarse dos mensajes distintos, se repite código cuando facilmente se puede utilizar el #not.
+
+2. En nuestra opinión, nos parece una implementación correcta porque a pesar de ser objetos similares con los mismos comportamientos, tienen características distintas que puedan afectar su resultado (por ejemplo, fuerza y agilidad).
+
+3. Lo modelamos con un objeto que calcula el resultado final y devuelve un string según sea el caso. También consideramos devolver las colecciones de los combatientes (bando 1 o bando 2) o nil en caso de que nadie haya ganado. Esta opción fue descartada porque no pudimos adaptarlo a las pruebas.
+También pensamos en crear nuevos objetos Bando1, Bando2 y Ninguno para ser devueltos como resultado pero como no tenían responsabilidades, nos pareció innecesario.
