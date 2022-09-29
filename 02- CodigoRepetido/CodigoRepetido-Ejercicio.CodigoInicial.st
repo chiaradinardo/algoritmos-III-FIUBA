@@ -1,4 +1,4 @@
-!classDefinition: #CantSuspend category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CantSuspend category: #'CodigoRepetido-Ejercicio'!
 Error subclass: #CantSuspend
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -6,7 +6,7 @@ Error subclass: #CantSuspend
 	category: 'CodigoRepetido-Ejercicio'!
 
 
-!classDefinition: #NotFound category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #NotFound category: #'CodigoRepetido-Ejercicio'!
 Error subclass: #NotFound
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -14,42 +14,47 @@ Error subclass: #NotFound
 	category: 'CodigoRepetido-Ejercicio'!
 
 
-!classDefinition: #CustomerBookTest category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CustomerBookTest category: #'CodigoRepetido-Ejercicio'!
 TestCase subclass: #CustomerBookTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MA 9/24/2022 15:10:09'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:19'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook timer timeItTook|
+	| customerBook millisecondsBeforeRunning millisecondsAfterRunning |
 	
 	customerBook := CustomerBook new.
 	
-	timer := Timer new.
-	timeItTook := timer takeTime: [customerBook addCustomerNamed: 'John Lennon'.].
-
-	self assert: timeItTook isLowerThan: (50* millisecond).
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	customerBook addCustomerNamed: 'John Lennon'.
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (50 * millisecond)
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MA 9/24/2022 15:15:17'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:13'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook timer timeItTook paulMcCartney |
+	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
 	
 	customerBook := CustomerBook new.
-	paulMcCartney := 'PaulMcCartney'.
+	paulMcCartney := 'Paul McCartney'.
+	
 	customerBook addCustomerNamed: paulMcCartney.
+	  
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	customerBook removeCustomerNamed: paulMcCartney.
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
-	timer := Timer new.
-	timeItTook := timer takeTime: [customerBook removeCustomerNamed: paulMcCartney].
+	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (100 * millisecond)
 	
-	self assert: timeItTook isLowerThan: (100 * millisecond).! !
+! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MA 9/24/2022 15:02:00'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'HernanWilkinson 5/9/2012 18:12'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
@@ -80,7 +85,7 @@ test04CanNotRemoveAnInvalidCustomer
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MA 9/24/2022 15:33:37'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:25'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 
 	| customerBook paulMcCartney|
@@ -91,18 +96,19 @@ test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 	customerBook addCustomerNamed: paulMcCartney.
 	customerBook suspendCustomerNamed: paulMcCartney.
 	
-	self assert: customerBook
- 	hasAmountOfActiveCustomers: 0
- 	hasAmountOfSuspendedCustomers: 1
- 	hasAmountOfTotalCustomers: 1.
-
+	self assert: 0 equals: customerBook numberOfActiveCustomers.
+	self assert: 1 equals: customerBook numberOfSuspendedCustomers.
+	self assert: 1 equals: customerBook numberOfCustomers.
 	self assert: (customerBook includesCustomerNamed: paulMcCartney).
+	
+
+	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'MA 9/24/2022 15:32:12'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:28'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
-	| customerBook paulMcCartney |
+	| customerBook paulMcCartney|
 	
 	customerBook := CustomerBook new.
 	paulMcCartney := 'Paul McCartney'.
@@ -111,11 +117,9 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	customerBook suspendCustomerNamed: paulMcCartney.
 	customerBook removeCustomerNamed: paulMcCartney.
 	
-	self assert: customerBook
- 	hasAmountOfActiveCustomers: 0
- 	hasAmountOfSuspendedCustomers: 0
- 	hasAmountOfTotalCustomers: 0.
-
+	self assert: 0 equals: customerBook numberOfActiveCustomers.
+	self assert: 0 equals: customerBook numberOfSuspendedCustomers.
+	self assert: 0 equals: customerBook numberOfCustomers.
 	self deny: (customerBook includesCustomerNamed: paulMcCartney).
 
 
@@ -157,29 +161,8 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
 
-
-!CustomerBookTest methodsFor: 'auxiliar' stamp: 'MA 9/24/2022 15:22:29'!
-assert: customerBook has: amountOfActiveCustomers and: amountofSuspendedCustomers
-
-	^nil! !
-
-!CustomerBookTest methodsFor: 'auxiliar' stamp: 'MA 9/24/2022 15:28:00'!
-assert: customerBook
- hasAmountOfActiveCustomers: amountOfActiveCustomers
- hasAmountOfSuspendedCustomers: amountofSuspendedCustomers 
- hasAmountOfTotalCustomers: amountofCustomers
-
-	self assert: amountOfActiveCustomers equals: customerBook numberOfActiveCustomers.
-	self assert: amountofSuspendedCustomers equals: customerBook numberOfSuspendedCustomers.
-	self assert: amountofCustomers equals: customerBook numberOfCustomers.! !
-
-!CustomerBookTest methodsFor: 'auxiliar' stamp: 'MA 9/24/2022 14:49:46'!
-assert: amountOfTime isLowerThan: timeLimit
-
-	self assert: amountOfTime < timeLimit.! !
-
 
-!classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: #CustomerBook category: #'CodigoRepetido-Ejercicio'!
 Object subclass: #CustomerBook
 	instanceVariableNames: 'suspended active'
 	classVariableNames: ''
@@ -205,16 +188,13 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
-!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/24/2022 15:59:03'!
+!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
 addCustomerNamed: aName
 
-	self checkCustomerExists: aName.
-	active add: aName ! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/24/2022 15:58:55'!
-checkCustomerExists: aName
 	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
-	((active includes: aName) or: [suspended includes: aName]) ifTrue: [ self signalCustomerAlreadyExists ].! !
+	((active includes: aName) or: [suspended includes: aName]) ifTrue: [ self signalCustomerAlreadyExists ].
+	
+	active add: aName ! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
 numberOfActiveCustomers
@@ -277,7 +257,7 @@ suspendCustomerNamed: aName
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'CustomerBook class' category: 'CodigoRepetido-Ejercicio'!
+!classDefinition: 'CustomerBook class' category: #'CodigoRepetido-Ejercicio'!
 CustomerBook class
 	instanceVariableNames: ''!
 
@@ -290,21 +270,3 @@ customerAlreadyExistsErrorMessage
 customerCanNotBeEmptyErrorMessage
 
 	^'Customer Name Cannot Be Empty'! !
-
-
-!classDefinition: #Timer category: 'CodigoRepetido-Ejercicio'!
-Object subclass: #Timer
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'CodigoRepetido-Ejercicio'!
-
-!Timer methodsFor: 'as yet unclassified' stamp: 'MA 9/24/2022 14:28:23'!
-takeTime: aBlock
-	| millisecondsBeforeRunning millisecondsAfterRunning|
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	
-	aBlock value.
-	
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
-	^ millisecondsAfterRunning - millisecondsBeforeRunning! !

@@ -176,7 +176,7 @@ Object subclass: #CustomerBook
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBook methodsFor: 'testing' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'testing' stamp: 'MA 9/27/2022 13:41:11'!
 includesCustomerNamed: aName
 
 	^(active includes: aName) or: [ suspended includes: aName ]! !
@@ -195,30 +195,22 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
-!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/24/2022 15:59:03'!
-addCustomerNamed: aName
-
-	self checkCustomerExists: aName.
-	active add: aName ! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/24/2022 15:58:55'!
-checkCustomerExists: aName
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:45:32'!
+addCustomerNamed: aName	
 	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
-	((active includes: aName) or: [suspended includes: aName]) ifTrue: [ self signalCustomerAlreadyExists ].! !
+	(self includesCustomerNamed: aName) ifTrue: [ self signalCustomerAlreadyExists ].
+	active add: aName.! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:45:44'!
 numberOfActiveCustomers
-	
 	^active size! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'CDN 9/26/2022 23:34:53'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:45:58'!
 numberOfCustomers
-	
 	^ self numberOfActiveCustomers + self numberOfSuspendedCustomers! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:09'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:45:52'!
 numberOfSuspendedCustomers
-	
 	^suspended size! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'CDN 9/26/2022 23:27:30'!
@@ -227,23 +219,18 @@ removeCustomerNamed: aName
 	ifAbsent: [ suspended remove: aName 
 	ifAbsent: [ ^ NotFound signal ] ].! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:52'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:46:21'!
 signalCustomerAlreadyExists 
-
 	self error: self class customerAlreadyExistsErrorMessage! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:51'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:46:26'!
 signalCustomerNameCannotBeEmpty 
-
 	self error: self class customerCanNotBeEmptyErrorMessage ! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'CDN 9/26/2022 23:41:59'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MA 9/27/2022 13:47:18'!
 suspendCustomerNamed: aName 
-	
 	(active includes: aName) ifFalse: [^CantSuspend signal].
-	
 	self removeCustomerNamed: aName.
-	
 	suspended add: aName
 ! !
 
