@@ -1,0 +1,9 @@
+1- El primer llamado es quien aporta la información de los objetos que van a interactuar entre sí. En el segundo llamado es donde existe la relación polimórfica entre el primer objeto y, normalmente, el segundo objeto que puede ser variable. El primer llamado le pasa la responsabilidad al segundo.
+
+2- Si solo existe una clase concreta, sería correcto instanciarla desde donde la vayamos a usar (por ejemplo, en el setup de las pruebas). Pero, en el caso de que el objeto se cree de "distintas maneras", se puede darle la responsabilidad de instanciarlo a su superclase. Creemos que esto es lo correcto para no romper el encapsulamiento.
+
+3- El criterio que utilizamos para categorizar los métodos es según el comportamiento y la privacidad del método. Por ejemplo, para los métodos que realizan las operaciones matemáticas pero que, sólo se usan dentro de la implementación de otros métodos, los categorizamos como "operaciones artiméticas - privadas'.
+
+4- Al implementar el mensaje de la superclase con “self subclassResponsibility”, obligamos a las subclases a implementar el mensaje. Esto sirve para declarar el protocolo de la clase y subclases, y además no tener errores cuando se quiera aplicar polimorfismo.
+
+5- Romper el encapsulamiento es un problema porque muestra la implementación de un objeto. Primero, esto hace que la responsabilidad del objeto no sea clara y que cualquier otro objeto pueda "hacer lo que quiera" con sus colaboradores internos. En relación a esto útlimo, empieza a existir una relación entre objetos que hacen que el modelo termine siendo desprolijo y díficil de mantener.
