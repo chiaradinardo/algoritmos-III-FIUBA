@@ -1,11 +1,11 @@
-!classDefinition: #Tests category: 'MarsRover'!
-TestCase subclass: #Tests
+!classDefinition: #RoverTests category: 'MarsRover'!
+TestCase subclass: #RoverTests
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!Tests methodsFor: 'assertions' stamp: 'M 11/3/2022 19:26:23'!
+!RoverTests methodsFor: 'assertions' stamp: 'M 11/3/2022 19:26:23'!
 assertNewRoverInLocation: aStartingLocation Pointing: aCardinalDirection movedTo: aFinalLocation afterCommand: aStringCommandSequence
 
 	|rover|
@@ -14,7 +14,7 @@ assertNewRoverInLocation: aStartingLocation Pointing: aCardinalDirection movedTo
 	rover executeStringCommandSequence: aStringCommandSequence.
 	self assert: rover location = aFinalLocation.! !
 
-!Tests methodsFor: 'assertions' stamp: 'M 11/3/2022 19:32:26'!
+!RoverTests methodsFor: 'assertions' stamp: 'M 11/3/2022 19:32:26'!
 assertNewRoverPointing: inicialCardinalDirection faces: newCardinalDirection afterStringCommand: aStringCommand
 
 	|rover|
@@ -24,70 +24,75 @@ assertNewRoverPointing: inicialCardinalDirection faces: newCardinalDirection aft
 	self assert: rover direction = newCardinalDirection.! !
 
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:29:36'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:29:36'!
 test01RoversLocationIsTheSameAfterEmptyCommand
 
 	self assertNewRoverInLocation: 0@0 Pointing: North  movedTo: 0@0  afterCommand: ''.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:33:10'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:33:10'!
 test02RoverDirectionIsTheSameAfterEmptyCommand
 
 	self assertNewRoverPointing: North faces: North afterStringCommand: ''.
 ! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:41'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:41'!
 test03RoverPointingNorthMovesNorthAfterForwardCommand
 
 	self assertNewRoverInLocation: 0@0 Pointing: North  movedTo: 0@1  afterCommand: 'f'.
 ! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:34'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:34'!
 test04RoverPointingSouthMovesSouthAfterForwardCommand
 
 	self assertNewRoverInLocation: -46@86 Pointing: South movedTo: -46@85  afterCommand: 'f'.
 ! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:29'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:29'!
 test05RoverPointingEastMovesEastAfterForwardCommand
 
 	self assertNewRoverInLocation: -827@-273 Pointing: East movedTo: -826@-273  afterCommand: 'f'.
 ! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:22'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:22'!
 test06RoverPointingWestMovesWestAfterForwardCommand
 
 	self assertNewRoverInLocation: 100@0 Pointing: West movedTo: 99@0  afterCommand: 'f'.
 ! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:58'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:58'!
 test07RoverPointingEastMovesWestAfterSingleBackCommand
 
 	self assertNewRoverInLocation: 0@0 Pointing: East movedTo: -1@0  afterCommand: 'b'.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:04'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:37:04'!
 test08RoverMovesCorrectlyAfterSeveralEqualCommands
 
 	self assertNewRoverInLocation: 0@0 Pointing: South movedTo: 0@5  afterCommand: 'bbbbb'.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:38:53'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:38:53'!
 test09RoverMovesCorrectlyAfterSeveralDifferentCommands
 
 	self assertNewRoverInLocation: 0@0 Pointing: West movedTo: -1@0  afterCommand: 'bbfbfff'.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 19:45:31'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 19:45:31'!
 test10RoverPointingNorthChangesDirectionEastAfterOneRotateRightCommand
 
 	self assertNewRoverPointing: North faces: East afterStringCommand: 'r'.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 20:20:57'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 20:20:57'!
 test11RoverPointingWestChangesDirectionNorthAfterThreeRotateLeftCommand
 
 	self assertNewRoverPointing: West faces: North afterStringCommand: 'lll'.! !
 
-!Tests methodsFor: 'testing' stamp: 'M 11/3/2022 20:51:04'!
+!RoverTests methodsFor: 'testing' stamp: 'M 11/3/2022 20:51:04'!
 test12RoverRemainsUnchangedAfterInvalidCommand
 
 	self assertNewRoverInLocation: 0@0 Pointing: North movedTo: 0@0 afterCommand: 'affb'.! !
+
+!RoverTests methodsFor: 'testing' stamp: 'CDN 11/4/2022 15:08:41'!
+test13CommandsAreNotCaseSensitive
+
+	self assertNewRoverInLocation: 0@0 Pointing: North movedTo: 0@2 afterCommand: 'Ff'.! !
 
 
 !classDefinition: #CardinalDirection category: 'MarsRover'!
@@ -272,21 +277,23 @@ executeStringCommandSequence: aStringCommandSequence
 	].! !
 
 
-!Rover methodsFor: 'private' stamp: 'CDN 11/4/2022 00:09:55'!
-executeSingleCharacterCommand: aStringCommand
-
-	(aStringCommand = 'f' or: aStringCommand = 'b' or: aStringCommand = 'r' or: aStringCommand = 'l') ifFalse: [^false].
-	(commands at: aStringCommand) value.
+!Rover methodsFor: 'private' stamp: 'CDN 11/4/2022 15:13:30'!
+executeSingleCharacterCommand: aStringCommand	
+	| movement |
+	
+	movement := commands at: (aStringCommand asUppercase) ifAbsent: [ ^ false ].
+	
+	movement value.
 	
 	^true.! !
 
-!Rover methodsFor: 'private' stamp: 'CDN 11/4/2022 00:10:36'!
+!Rover methodsFor: 'private' stamp: 'CDN 11/4/2022 15:03:52'!
 initializeCommands
 
-	commands at: 'f' put: [location := location + direction versor].
-	commands at: 'b' put: [location := location - direction versor].
-	commands at: 'r' put: [direction := direction ninetyDegreesRight].
-	commands at: 'l' put: [direction := direction ninetyDegreesLeft].! !
+	commands at: 'F' put: [location := location + direction versor].
+	commands at: 'B' put: [location := location - direction versor].
+	commands at: 'R' put: [direction := direction ninetyDegreesRight].
+	commands at: 'L' put: [direction := direction ninetyDegreesLeft].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
