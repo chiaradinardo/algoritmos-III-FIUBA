@@ -5,7 +5,7 @@ TestCase subclass: #AccountSummaryTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 01:29:42'!
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test01AccountWithoutTransactionsHasAReportWithBalanceEqualsZero
 
 	| account report |
@@ -14,9 +14,9 @@ test01AccountWithoutTransactionsHasAReportWithBalanceEqualsZero
 	
 	report := AccountSummary for: account.
 	
-	self assert: 'Balance = 0 pesos' equals: report print.! !
+	self assert: 'Balance = 0 pesos' equals: report export.! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 17:18:15'!
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test02AccountWithOnlyOneDepositHasAReportWithDepositAndBalanceEqualsToDepositAmount
 
 	| account report |
@@ -27,9 +27,9 @@ test02AccountWithOnlyOneDepositHasAReportWithDepositAndBalanceEqualsToDepositAmo
 	
 	report := AccountSummary for: account.
 	
-	self assert: 'Depósito por 300 pesos - Balance = 300 pesos' equals: report print.! !
+	self assert: 'Depósito por 300 pesos', String newLineString, 'Balance = 300 pesos' equals: report export.! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 17:18:06'!
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test03AccountWithOnlyOneWithdrayHasAReportWithWithdrawAndBalanceEqualsWithdrawAmount
 
 	| account report |
@@ -40,10 +40,10 @@ test03AccountWithOnlyOneWithdrayHasAReportWithWithdrawAndBalanceEqualsWithdrawAm
 		
 	report := AccountSummary for: account.
 	
-	self assert: 'Extracción por 200 pesos - Balance = -200 pesos' equals: report print.
+	self assert: 'Extracción por 200 pesos', String newLineString, 'Balance = -200 pesos' equals: report export.
 ! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 17:18:24'!
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test04AccountThatOnlyTransfersMoneyHasAReportWithWithdrawAndBalanceEqualsTransferValue
 
 	| senderAccount receiveAccount report |
@@ -56,10 +56,10 @@ test04AccountThatOnlyTransfersMoneyHasAReportWithWithdrawAndBalanceEqualsTransfe
 		
 	report := AccountSummary for: senderAccount.
 	
-	self assert: 'Salida por transferencia de 200 pesos - Balance = -200 pesos' equals: report print.
+	self assert: 'Salida por transferencia de 200 pesos', String newLineString, 'Balance = -200 pesos' equals: report export.
 ! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 17:18:29'!
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test05AccountThatOnlyReceivesMoneyHasAReportWithDepositAndBalanceEqualsTransferValue
 
 	| senderAccount receiveAccount report |
@@ -72,11 +72,11 @@ test05AccountThatOnlyReceivesMoneyHasAReportWithDepositAndBalanceEqualsTransferV
 		
 	report := AccountSummary for: receiveAccount.
 	
-	self assert: 'Entrada por transferencia de 10 pesos - Balance = 10 pesos' equals: report print.
+	self assert: 'Entrada por transferencia de 10 pesos', String newLineString, 'Balance = 10 pesos' equals: report export.
 ! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 18:19:10'!
-test06
+!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test06AccountWithSeveralTransfersHasAReportReflectingThem
 
 	| senderAccount receiveAccount report |
 	
@@ -90,7 +90,7 @@ test06
 				
 	report := AccountSummary for: senderAccount.
 			
-	self assert: 'Depósito por 10 pesos - Salida por transferencia de 10 pesos - Balance = 0 pesos' equals: report print.
+	self assert: 'Depósito por 10 pesos', String newLineString, 'Salida por transferencia de 10 pesos', String newLineString, 'Balance = 0 pesos' equals: report export.
 ! !
 
 
@@ -204,6 +204,327 @@ test09PortfolioTransactionsAreCalculatedRecursively
 	self assert: (composedPortfolioTransactions includes: composedPortfolioAccountWithdraw)! !
 
 
+!classDefinition: #PortfolioTreeDetailedPrinterTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #PortfolioTreeDetailedPrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:51:12'!
+test01EmptyPortfolioWithEmptyNameOnlyHasEmptyStringAndZeroBalanceInDetailedTreeReport
+
+	|treeReportDetailed portfolio|
+	
+	portfolio := Portfolio named: ''.
+	
+	treeReportDetailed := PortfolioDetailedTreePrinter for: portfolio.
+	
+	self assert: treeReportDetailed print equals: '', String newLineString, String tab, 'Balance = 0 pesos'! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:51:08'!
+test02EmptyPortfolioWithOnlyHasNameAndZeroBalanceInDetailedTreeReport
+
+	|treeReportDetailed portfolio|
+	
+	portfolio := Portfolio named: 'Portfolio de Dieguito Essaya'.
+	
+	treeReportDetailed := PortfolioDetailedTreePrinter for: portfolio.
+	
+	self assert: treeReportDetailed print equals: 'Portfolio de Dieguito Essaya', String newLineString, String tab, 'Balance = 0 pesos'.! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:50:59'!
+test03PortfolioWithOneEmptyAccountHasAccountsNameAndZeroBalanceInDetailedTreeReport
+
+	|treeReportDetailed portfolio account|
+	
+	portfolio := Portfolio named: 'Portfolio de Bob Esponja'.
+	
+	treeReportDetailed := PortfolioDetailedTreePrinter for: portfolio.
+	
+	account := ReceptiveAccount named: 'Cuenta de Gary'.
+	
+	portfolio add: account.
+	
+	self assert: treeReportDetailed print equals: 
+	('Portfolio de Bob Esponja', String newLineString, String tab,'Cuenta de Gary', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, 'Balance = 0 pesos').	! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:17:59'!
+test04PortfolioWithTwoAccountsHasAccountsNamesAndBalancesInDetailedTreeReport
+
+	|treeDetailedReport portfolio account1 account2|
+	
+	portfolio := Portfolio named: 'Portfolio de Bob Esponja'.
+	
+	treeDetailedReport := PortfolioDetailedTreePrinter for: portfolio.
+	
+	account1 := ReceptiveAccount named: 'Cuenta de Gary'.
+	
+	account2 := ReceptiveAccount named: 'Cuenta de Estrellita'.
+	
+	portfolio add: account1.
+	
+	portfolio add: account2.
+	
+	self assert: treeDetailedReport print equals: 
+	('Portfolio de Bob Esponja', String newLineString, String tab,'Cuenta de Gary', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab,'Cuenta de Estrellita', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, 'Balance = 0 pesos').	! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:18:29'!
+test05PortfolioWithPortfolioWithAccountHasAllNamesCorrectlyIndentedInTreeReport
+
+	| treeDetailedReport parentPortfolio childPortfolio account |
+	
+	parentPortfolio := Portfolio named: 'Portfolio del profesor Utonio'.
+	
+	childPortfolio := Portfolio named: 'Portfolio de las chicas superpoderosas'.
+	
+	account := ReceptiveAccount named: 'Cuenta de Bellota'.
+	
+	treeDetailedReport := PortfolioDetailedTreePrinter for: parentPortfolio.
+	
+	Deposit register: 0 on: account.
+	
+	parentPortfolio add: childPortfolio.
+	
+	childPortfolio add: account.
+	
+	self assert: treeDetailedReport print equals: ('Portfolio del profesor Utonio', String newLineString, String tab, 'Portfolio de las chicas superpoderosas', String newLineString, String tab, String tab, 'Cuenta de Bellota', String newLineString, String tab, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, 'Balance = 0 pesos').! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:19:06'!
+test06PortfolioWithMultiplePortfolioAndAccountsRepresentsAllNamesCorrectlyInTreeReport
+
+	| treeDetailedReport parentPortfolio childPortfolio grandchildPortfolio account1 account2 account3 account4|
+	
+	parentPortfolio := Portfolio named: 'Portfolio padre'.
+	
+	childPortfolio := Portfolio named: 'Portfolio hijo'.
+	
+	grandchildPortfolio:= Portfolio named: 'Portfolio nieto'.
+	
+	account1 := ReceptiveAccount named: 'Cuenta hija'.
+	
+	account2 := ReceptiveAccount named: 'Cuenta nieta'. 
+	
+	account3 := ReceptiveAccount named: 'Cuenta bis-nieta 1'.
+	
+	account4 := ReceptiveAccount named: 'Cuenta bis-nieta 2'.
+	
+	treeDetailedReport := PortfolioDetailedTreePrinter for: parentPortfolio.
+	
+	parentPortfolio add: childPortfolio.
+	
+	parentPortfolio add: account1.
+	
+	childPortfolio add: grandchildPortfolio.
+	
+	childPortfolio add: account2.
+	
+	grandchildPortfolio add: account3.
+	
+	grandchildPortfolio add: account4.
+	
+	
+	self assert: treeDetailedReport print equals: (	'Portfolio padre', String newLineString, String tab, 'Portfolio hijo', String newLineString, String tab, String tab, 'Portfolio nieto', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 1', String newLineString, String tab, String tab, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 2', String newLineString, String tab, String tab, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, String tab, 'Cuenta nieta', String newLineString, String tab, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, 'Cuenta hija', String newLineString, String tab, String tab, 'Balance = 0 pesos', String newLineString, String tab, 'Balance = 0 pesos').
+	
+	! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:16:30'!
+test07PortfolioWithMultiplePortfolioAndAccountsRepresentsAllNamesCorrectlyInTreeReport
+
+	| treeDetailedReport parentPortfolio childPortfolio grandchildPortfolio account1 account2 account3 account4|
+	
+	parentPortfolio := Portfolio named: 'Portfolio padre'.
+	
+	childPortfolio := Portfolio named: 'Portfolio hijo'.
+	
+	grandchildPortfolio:= Portfolio named: 'Portfolio nieto'.
+	
+	account1 := ReceptiveAccount named: 'Cuenta hija'.
+	
+	account2 := ReceptiveAccount named: 'Cuenta nieta'. 
+	
+	account3 := ReceptiveAccount named: 'Cuenta bis-nieta 1'.
+	
+	account4 := ReceptiveAccount named: 'Cuenta bis-nieta 2'.
+	
+	treeDetailedReport := PortfolioDetailedTreePrinter for: parentPortfolio.
+	
+	parentPortfolio add: childPortfolio.
+	
+	parentPortfolio add: account1.
+	
+	childPortfolio add: grandchildPortfolio.
+	
+	childPortfolio add: account2.
+	
+	grandchildPortfolio add: account3.
+	
+	grandchildPortfolio add: account4.
+	
+	Deposit register: 100 on: account3.
+	Deposit register: 200 on: account4.
+	Deposit register: -200 on: account2.
+	Deposit register: 200 on: account1.
+	
+	self assert: treeDetailedReport print equals: (	'Portfolio padre', String newLineString, String tab, 'Portfolio hijo', String newLineString, String tab, String tab, 'Portfolio nieto', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 1', String newLineString, String tab, String tab, String tab, String tab, 'Balance = 100 pesos', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 2', String newLineString, String tab, String tab, String tab, String tab, 'Balance = 200 pesos', String newLineString, String tab, String tab, String tab, 'Balance = 300 pesos', String newLineString, String tab, String tab, 'Cuenta nieta', String newLineString, String tab, String tab, String tab, 'Balance = -200 pesos', String newLineString, String tab, String tab, 'Balance = 100 pesos', String newLineString, String tab, 'Cuenta hija', String newLineString, String tab, String tab, 'Balance = 200 pesos', String newLineString, String tab, 'Balance = 300 pesos').
+	
+	! !
+
+!PortfolioTreeDetailedPrinterTest methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:21:34'!
+test08PortfolioWithAccountHasAccountsNameAndCorrectBalanceInDetailedTreeReport
+
+	|treeReportDetailed portfolio account|
+	
+	portfolio := Portfolio named: 'Portfolio de Bob Esponja'.
+	
+	treeReportDetailed := PortfolioDetailedTreePrinter for: portfolio.
+	
+	account := ReceptiveAccount named: 'Cuenta de Gary'.
+	
+	Deposit register: 100 on: account.
+	
+	portfolio add: account.
+	
+	self assert: treeReportDetailed print equals: 
+	('Portfolio de Bob Esponja', String newLineString, String tab,'Cuenta de Gary', String newLineString, String tab, String tab, 'deposito por 100 pesos', String newLineString, String tab, String tab, 'Balance = 100 pesos', String newLineString, String tab, 'Balance = 100 pesos').	! !
+
+
+!classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #PortfolioTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test01EmptyPortfolioWithEmptyNameOnlyHasEmptyStringInTreeReport
+
+	|treeReport portfolio|
+	
+	portfolio := Portfolio named: ''.
+	
+	treeReport := PortfolioTreePrinter for: portfolio.
+	
+	self assert: treeReport export equals: ''! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test02EmptyPortfolioWithNameOnlyHasNameInTreeReport
+
+	|treeReport portfolio|
+	
+	portfolio := Portfolio named: 'Cosmo y Wanda'.
+	
+	treeReport := PortfolioTreePrinter for: portfolio.
+	
+	self assert: treeReport export equals: 'Cosmo y Wanda'! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test03PortfolioWithOneAccountHasAccountsNameInTreeReport
+
+	|treeReport portfolio account|
+	
+	portfolio := Portfolio named: 'Portfolio de Bob Esponja'.
+	
+	treeReport := PortfolioTreePrinter for: portfolio.
+	
+	account := ReceptiveAccount named: 'Cuenta de Gary'.
+	
+	portfolio add: account.
+	
+	self assert: treeReport export equals: 
+	('Portfolio de Bob Esponja', String newLineString, String tab,'Cuenta de Gary').	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test04PortfolioWithTwoEmptyAccountsOnlyHasAccountsNamesInTreeReport
+
+	|treeReport portfolio account1 account2|
+	
+	portfolio := Portfolio named: 'Portfolio de la familia Simpson'.
+	
+	treeReport := PortfolioTreePrinter for: portfolio.
+	
+	account1 := ReceptiveAccount named: 'Cuenta de Marge'.
+	
+	account2 := ReceptiveAccount named: 'Cuenta de Maggie'.
+	
+	portfolio add: account1.
+	portfolio add: account2.
+	
+	self assert: treeReport export equals: ('Portfolio de la familia Simpson',String newLineString, String tab, 'Cuenta de Marge', String newLineString, String tab, 'Cuenta de Maggie').	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test05PortfolioWithPortfolioHasBothNamesInTreeReport
+
+	| treeReport parentPortfolio childPortfolio |
+	
+	parentPortfolio := Portfolio named: 'Portfolio de las Chicas Super Poderosas'.
+	
+	childPortfolio := Portfolio named: 'Portfolio de Burbuja'.
+	
+	treeReport := PortfolioTreePrinter for: parentPortfolio.
+	
+	parentPortfolio add: childPortfolio.
+	
+	self assert: treeReport export equals: ('Portfolio de las Chicas Super Poderosas', String newLineString, String tab, 'Portfolio de Burbuja').! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test06PortfolioWithPortfolioWithAccountHasAllNamesCorrectlyIndentedInTreeReport
+
+	| treeReport parentPortfolio childPortfolio account |
+	
+	parentPortfolio := Portfolio named: 'Portfolio del profesor Utonio'.
+	
+	childPortfolio := Portfolio named: 'Portfolio de las chicas superpoderosas'.
+	
+	account := ReceptiveAccount named: 'Cuenta de Bellota'.
+	
+	treeReport := PortfolioTreePrinter for: parentPortfolio.
+	
+	parentPortfolio add: childPortfolio.
+	
+	childPortfolio add: account.
+	
+	self assert: treeReport export equals: ('Portfolio del profesor Utonio', String newLineString, String tab, 'Portfolio de las chicas superpoderosas', String newLineString, String tab, String tab, 'Cuenta de Bellota').! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test07PortfolioWithMultiplePortfolioAndAccountsRepresentsAllNamesCorrectlyInTreeReport
+
+	| treeReport parentPortfolio childPortfolio grandchildPortfolio account1 account2 account3 account4|
+	
+	parentPortfolio := Portfolio named: 'Portfolio padre'.
+	
+	childPortfolio := Portfolio named: 'Portfolio hijo'.
+	
+	grandchildPortfolio:= Portfolio named: 'Portfolio nieto'.
+	
+	account1 := ReceptiveAccount named: 'Cuenta hija'.
+	
+	account2 := ReceptiveAccount named: 'Cuenta nieta'. 
+	
+	account3 := ReceptiveAccount named: 'Cuenta bis-nieta 1'.
+	
+	account4 := ReceptiveAccount named: 'Cuenta bis-nieta 2'.
+	
+	treeReport := PortfolioTreePrinter for: parentPortfolio.
+	
+	parentPortfolio add: childPortfolio.
+	
+	parentPortfolio add: account1.
+	
+	childPortfolio add: grandchildPortfolio.
+	
+	childPortfolio add: account2.
+	
+	grandchildPortfolio add: account3.
+	
+	grandchildPortfolio add: account4.
+	
+	self assert: treeReport export equals: (	'Portfolio padre', String newLineString, String tab, 'Portfolio hijo', String newLineString, String tab, String tab, 'Portfolio nieto', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 1', String newLineString, String tab, String tab, String tab, 'Cuenta bis-nieta 2', String newLineString, String tab, String tab, 'Cuenta nieta', String newLineString, String tab, 'Cuenta hija').
+	
+	
+	! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -302,7 +623,7 @@ TestCase subclass: #TransferNetTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 20:00:38'!
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test01AccountWithoutTransfersHasANetBalanceEqualsZero
 
 	| account report |
@@ -311,9 +632,9 @@ test01AccountWithoutTransfersHasANetBalanceEqualsZero
 	
 	report := TransferNet for: account.
 	
-	self assert: 'Balance neto = 0 pesos' equals: report print.! !
+	self assert: 'Balance neto = 0 pesos' equals: report export.! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 20:01:31'!
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
 test02AccountWithDepositTransferAndDepositHasANetBalanceEqualsTransferValue
 
 	| senderAccount report receiveAccount |
@@ -328,24 +649,28 @@ test02AccountWithDepositTransferAndDepositHasANetBalanceEqualsTransferValue
 	
 	report := TransferNet for: receiveAccount.
 	
-	self assert: 'Balance neto = 100 pesos' equals: report print.! !
+	self assert: 'Balance neto = 100 pesos' equals: report export.! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 20:02:12'!
-test03AccountWithWithdrawTransferAndDepositHasANetBalanceEqualsTransferValue
+!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+test03PortfolioWithAccountWithWithdrawTransferAndDepositHasANetBalanceEqualsTransferValue
 
-	| senderAccount report receiveAccount |
+	| portfolio senderAccount report receiveAccount |
 	
 	senderAccount := ReceptiveAccount new.
 
 	receiveAccount := ReceptiveAccount new.
 	
+	portfolio := Portfolio new.
+	
+	portfolio add: senderAccount.
+	
 	Transfer amount: 100 from: senderAccount to: receiveAccount. 
 	
 	Withdraw register: 200 on: senderAccount.
 	
-	report := TransferNet for: senderAccount.
+	report := TransferNet for: portfolio.
 	
-	self assert: 'Balance neto = -100 pesos' equals: report print.! !
+	self assert: 'Balance neto = -100 pesos' equals: report export.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -480,10 +805,16 @@ addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
 
+
+!Account methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:55:41'!
+addToReport: aReport
+	
+	^ self subclassResponsibility.! !
+
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Solucion'!
 Account subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'accounts name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -493,6 +824,17 @@ initialize
 
 	accounts := OrderedCollection new.! !
 
+!Portfolio methodsFor: 'initialization' stamp: 'M 11/16/2022 22:59:28'!
+initializeNamed: aName
+
+	accounts := OrderedCollection new.
+	name := aName.! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'M 11/16/2022 23:19:06'!
+accounts
+	
+	^ accounts copy.! !
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
 balance
@@ -503,6 +845,11 @@ balance
 hasRegistered: aTransaction
 
 	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'M 11/16/2022 23:05:55'!
+name
+	
+	^name.! !
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
 transactions
@@ -520,6 +867,12 @@ add: accountToAdd
 	
 	accounts add: accountToAdd.
 	! !
+
+
+!Portfolio methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:56:21'!
+addToReport: aReport
+
+	aReport addPortfolio: self.! !
 
 
 !Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
@@ -548,10 +901,15 @@ with: anAccount with: anotherAccount
 		add: anotherAccount;
 		yourself! !
 
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'M 11/16/2022 22:58:50'!
+named: aName
+	^self new initializeNamed: aName.! !
+
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Solucion'!
 Account subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
@@ -561,6 +919,10 @@ initialize
 
 	super initialize.
 	transactions := OrderedCollection new.! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'M 11/16/2022 23:12:59'!
+initializeNamed: aName 
+	name := aName.! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:24:46'!
@@ -575,6 +937,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'M 11/16/2022 23:22:40'!
+name
+	^name.! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -593,6 +959,22 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
+
+!ReceptiveAccount methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:56:45'!
+addToReport: aReport
+
+	aReport addReceptiveAccount: self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Solucion'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'instance creation' stamp: 'M 11/16/2022 23:12:41'!
+named: aName
+	^self new initializeNamed: aName.! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountTransaction
@@ -605,6 +987,12 @@ Object subclass: #AccountTransaction
 value 
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:55:00'!
+addToBalance: aReport
+	
+	^ self subclassResponsibility.! !
 
 
 !AccountTransaction methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:39'!
@@ -654,7 +1042,7 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 18:36:11'!
+!Deposit methodsFor: 'accessing' stamp: 'CDN 11/16/2022 18:36:11'!
 addToReport: aReport
 
 	aReport addDepositOnReport: self.! !
@@ -689,6 +1077,12 @@ initializeWith: aTransfer
 
 	transfer := aTransfer! !
 
+
+!TransferLeg methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:53:57'!
+addToReport: aReport
+	
+	^ self subclassResponsibility.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferLeg class' category: 'ServiciosFinancieros-Solucion'!
@@ -713,16 +1107,16 @@ TransferLeg subclass: #TransferDepositLeg
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
+!TransferDepositLeg methodsFor: 'accessing' stamp: 'CDN 11/16/2022 18:38:56'!
+addToReport: aReport
+	
+	aReport addTransferDepositLegOnReport: self.! !
+
 !TransferDepositLeg methodsFor: 'accessing' stamp: 'LL 9/20/2020 22:26:10'!
 withdrawLeg
 
 	^transfer withdrawLeg! !
 
-
-!TransferDepositLeg methodsFor: 'balance' stamp: 'CDN 11/16/2022 18:38:56'!
-addToReport: aReport
-	
-	aReport addTransferDepositLegOnReport: self.! !
 
 !TransferDepositLeg methodsFor: 'balance' stamp: 'LL 9/20/2020 22:27:49'!
 affectBalance: aBalance
@@ -737,6 +1131,11 @@ TransferLeg subclass: #TransferWithdrawLeg
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
+!TransferWithdrawLeg methodsFor: 'accessing' stamp: 'CDN 11/16/2022 18:39:14'!
+addToReport: aReport
+	
+	aReport addTransferWithdrawLegOnReport: self.! !
+
 !TransferWithdrawLeg methodsFor: 'accessing' stamp: 'LL 9/20/2020 22:25:47'!
 depositLeg
 
@@ -747,12 +1146,6 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
-
-
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 18:39:14'!
-addToReport: aReport
-	
-	aReport addTransferWithdrawLegOnReport: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -797,6 +1190,131 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #PortfolioDetailedTreePrinter
+	instanceVariableNames: 'portfolio'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:38:47'!
+initializeFor: aPortfolio
+
+	portfolio := aPortfolio.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:48:33'!
+print
+
+	"|detailedReport|
+	detailedReport := ''.
+	
+	portfolio accounts do:[:anAccount | detailedReport := detailedReport, String newLineString, String tab, anAccount name, String newLineString, String tab, String tab, 'Balance = ', anAccount balance asString, ' pesos'].	
+	detailedReport := portfolio name,  detailedReport, String newLineString, String tab, 'balance = ', portfolio balance asString, ' pesos'."
+
+	^self print: portfolio withIndentation: ''.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 17:15:09'!
+print: anAccount withIndentation: anIndentation
+
+	| reportString |
+	reportString := ''.
+	
+	(anAccount isKindOf: ReceptiveAccount) ifTrue: [^anIndentation, anAccount name, String newLineString, anIndentation, String tab, 'Balance = ', anAccount balance asString, ' pesos'].
+	
+	(anAccount accounts isEmpty) ifTrue: [^anIndentation, anAccount name, String newLineString, anIndentation, String tab, 'Balance = ', anAccount balance asString, ' pesos'].
+	
+	anAccount accounts do: [:childAccount | reportString := reportString, String newLineString, (self print: childAccount withIndentation: String tab, anIndentation)].
+	
+	^ anIndentation, anAccount name, reportString, String newLineString, anIndentation, String tab, 'Balance = ', anAccount balance asString, ' pesos'.
+	! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 16:57:41'!
+printReportOf: anAccount with: anIndentation
+
+	| report |
+
+	report := ''.
+
+	anAccount transactions do: [ :aTransaction | aTransaction addToReport: (String newLineString, anIndentation, String tab, report)].
+	
+	report add: String newLineString, anIndentation, String tab, 'Balance = ', anAccount balance asString, ' pesos'.
+	
+	^ anIndentation, anAccount name, report.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioDetailedTreePrinter class' category: 'ServiciosFinancieros-Solucion'!
+PortfolioDetailedTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioDetailedTreePrinter class methodsFor: 'as yet unclassified' stamp: 'M 11/18/2022 15:38:34'!
+for: aPortfolio 
+	^self new initializeFor: aPortfolio.! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #PortfolioTreePrinter
+	instanceVariableNames: 'portfolio report indentation'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 17:14:26'!
+addPortfolio: aPortfolio
+
+	| childReport |
+	
+	childReport := PortfolioTreePrinter for: aPortfolio.
+	
+	report := report, indentation, (childReport printWithIndentation: indentation).
+	
+! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 17:14:26'!
+addReceptiveAccount: aReceptiveAccount
+
+	report := report, indentation, aReceptiveAccount name.! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 17:04:32'!
+export
+	
+	^ self printWithIndentation: ''.
+
+	! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 17:14:26'!
+initializeFor: aPortfolio
+	portfolio := aPortfolio.
+	
+	report := ''.
+	
+	indentation := String tab.! !
+
+!PortfolioTreePrinter methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 17:14:26'!
+printWithIndentation: anIndentation
+
+	report := report, portfolio name.
+
+	indentation := indentation, anIndentation.
+	
+	portfolio accounts do: [ :anAccount |
+		report := report, String newLineString.
+		anAccount addToReport: self. ].
+	
+	^ report
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioTreePrinter class' category: 'ServiciosFinancieros-Solucion'!
+PortfolioTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioTreePrinter class methodsFor: 'instance creation' stamp: 'M 11/16/2022 23:00:12'!
+for: aPortfolio 
+	^self new initializeFor: aPortfolio.! !
+
+
 !classDefinition: #Report category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #Report
 	instanceVariableNames: ''
@@ -804,8 +1322,8 @@ Object subclass: #Report
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Report methodsFor: 'as yet unclassified' stamp: 'CDN 11/16/2022 19:59:48'!
-print 
+!Report methodsFor: 'as yet unclassified' stamp: 'CDN 11/18/2022 13:46:49'!
+export 
 	
 	^ self subclassResponsibility.! !
 
@@ -839,8 +1357,8 @@ addWithdrawOnReport: aWithdraw
 	report add: 'Extracción por ', aWithdraw value asString, ' pesos'! !
 
 
-!AccountSummary methodsFor: 'accessing' stamp: 'CDN 11/16/2022 18:43:41'!
-print
+!AccountSummary methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:46:49'!
+export
 
 	| transactions | 
 			
@@ -850,7 +1368,7 @@ print
 	
 	report add: 'Balance = ', receptiveAccount balance asString, ' pesos'.
 	
-	^ ' - ' join: report.! !
+	^ String newLineString join: report.! !
 
 
 !AccountSummary methodsFor: 'initialization' stamp: 'CDN 11/16/2022 17:38:53'!
@@ -878,8 +1396,8 @@ Report subclass: #TransferNet
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'accessing' stamp: 'CDN 11/16/2022 19:56:43'!
-print
+!TransferNet methodsFor: 'accessing' stamp: 'CDN 11/18/2022 13:46:49'!
+export
 			
 	receptiveAccount transactions do: [ :aTransaction | aTransaction addToReport: self ].
 	
