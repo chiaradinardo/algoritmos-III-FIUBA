@@ -1,0 +1,6 @@
+Hola, queríamos dejar un texto explicando que faltó en nuestra entrega. No llegamos a adaptar el Detailed Tree Printer
+para que pueda agregar las transacciones de las cuentas. Justo Se rompió el último día el servicio de buscar ayuda
+a ayudantes así que tampoco pudimos pedir ayuda hoy viernes. Escribo por acá como haríamos la parte de las transacciones.
+Basicamente, tendríamos que usar los report de tipo Account Summary que devuelven justamente eso y en los casos de tener
+una cuenta hay que realizar eso y agregarle la indentación correcta. Este texto nos recomendó Ana que hagamos para que
+se entienda que faltó y que podríamos haber hecho. Saludos.
